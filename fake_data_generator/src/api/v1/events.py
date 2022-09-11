@@ -3,6 +3,9 @@ from datetime import datetime, timedelta
 from random import choice, getrandbits, randint
 
 from fastapi import APIRouter
+from fastapi_utils.tasks import repeat_every
+
+from core.config import settings
 from models.models import NotificationEvent, Payload
 
 EVENT_TYPE = ['birthday', 'registration', 'reminder', 'comment_like', 'weekly_news']
@@ -14,6 +17,7 @@ router = APIRouter()
              response_model=NotificationEvent,
              summary="Send event to make notification",
              description="Send event to make notification")
+@repeat_every(seconds=settings.REPEAT_TASK_EVERY_SECONDS)
 async def send_notification_event() -> NotificationEvent:
     return NotificationEvent(
         event_type=choice(EVENT_TYPE),
