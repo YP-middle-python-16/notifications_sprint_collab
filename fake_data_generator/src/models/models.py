@@ -27,3 +27,19 @@ class NotificationEvent(ORJSONModel):
     start_dt: Optional[datetime]
     priority: int
     payload: Payload
+
+
+class UserInfo(ORJSONModel):
+    user_id: str
+    last_name: str
+    first_name: str
+    email: str
+    birthday_date: Optional[datetime]
+
+
+class MovieInfo(ORJSONModel):
+    movie_id: str
+    title: str
+    season: Optional[int]
+    episode: Optional[int]
+    release_date: Optional[datetime]

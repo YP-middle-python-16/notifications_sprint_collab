@@ -1,14 +1,38 @@
+import datetime
+from random import randint, getrandbits
+
+from faker import Faker
 from fastapi import APIRouter
-from fastapi.responses import ORJSONResponse
+
+from models.models import UserInfo, MovieInfo
 
 router = APIRouter()
+fake = Faker()
 
 
 @router.post("/auth/users",
-             response_class=ORJSONResponse,
+             response_model=UserInfo,
+             summary="Send user info",
+             description="Send user info")
+async def send_user_info(user_id: str):
+    return UserInfo(
+        user_id=user_id,
+        last_name=fake.last_name(),
+        first_name=fake.first_name(),
+        email=f'{fake.word()}@yandex.ru',
+        birthday_date=datetime.datetime.now() - datetime.timedelta(days=365 * randint(5, 65)),
+    )
+
+
+@router.post("/auth/movies",
+             response_model=MovieInfo,
              summary="Send event to make notification",
              description="Send event to make notification")
-async def send_user_info(user_id: str):
-    result = await event_service.send_message(event_message)
-
-    return ORJSONResponse({"status": "success"})
+async def send_movie_info(movie_id: str):
+    return MovieInfo(
+        movie_id=movie_id,
+        title=' '.join([fake.word() for i in range(randint(1, 5))]),
+        season=randint(0, 5) if getrandbits else None,
+        episode=randint(1, 100),
+        release_date=datetime.datetime.now() + datetime.timedelta(days=randint(0, 7))
+    )
