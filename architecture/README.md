@@ -7,6 +7,8 @@
 ## Схема базы данных
 [Ссылка на Miro](https://miro.com/welcomeonboard/ZkpwbFRqYTB1dlZDVTk0UDdnSXJhVzdNSEVabk4zRGl0MjNYZk9memhIQXlnT2ZIaEtRTFdrT2MzdGVSaXY3QXwzNDU4NzY0NTI5MDgxMzEwMDYx?share_link_id=406306079554)
 ![](database_scheme.png)
+Дополнение - информация об устройствах, на которые необходимо отправить уведомление,
+хранится в json-формате в таблице Event.transport_meta.
 
 ## Модели данных Notification API
 ### Входящие
