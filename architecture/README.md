@@ -56,6 +56,7 @@
         "content": [
           {
             "movie_id": movie_id,
+            "title": title,
             "season": null,
             "episode": null,
             "release_date": release_date
