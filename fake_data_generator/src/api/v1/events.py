@@ -19,14 +19,16 @@ router = APIRouter()
              description="Send event to make notification")
 @repeat_every(seconds=settings.REPEAT_TASK_EVERY_SECONDS)
 async def send_notification_event() -> NotificationEvent:
-    return NotificationEvent(
+    event = NotificationEvent(
         event_type=choice(EVENT_TYPE),
         created_dt=datetime.now(),
         schedule="0 0 * * *" if getrandbits else None,
         start_dt=datetime.now() + timedelta(days=randint(0, 10)),
         priority=randint(0, 5),
         payload=Payload(
-            user_ids=[uuid.uuid4() for i in range(1, randint(1, 10))],
-            movie_ids=[uuid.uuid4() for i in range(0, randint(0, 10))]
+            user_ids=[str(uuid.uuid4()) for i in range(1, randint(1, 10))],
+            movie_ids=[str(uuid.uuid4()) for i in range(0, randint(0, 10))]
         )
     )
+    print(event)
+    return event
