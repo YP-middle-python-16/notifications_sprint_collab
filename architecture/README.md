@@ -5,24 +5,26 @@
 ![](components.png)
 
 ## Схема базы данных
-[Ссылка на Miro](https://miro.com/welcomeonboard/ZkpwbFRqYTB1dlZDVTk0UDdnSXJhVzdNSEVabk4zRGl0MjNYZk9memhIQXlnT2ZIaEtRTFdrT2MzdGVSaXY3QXwzNDU4NzY0NTI5MDgxMzEwMDYx?share_link_id=406306079554)
-![](database_scheme.png)
-Дополнение - информация об устройствах, на которые необходимо отправить уведомление,
-хранится в json-формате в таблице Event.transport_meta.
+Храним данные в MongoDB в соответствии со входящей моделью событий. 
+Важно!!! Не решили, как хранить обработанные данные - после обогащения кладем в MongoDB???
 
 ## Модели данных Notification API
 ### Входящие
 ```json
 {
-    "event_type": event_type,
-    "created_dt": created_dt,
-    "schedule": "5 4 * * *",
-    "start_date": null,
-    "priority": 1,
-    "payload": {
-        "user": [user_id_1, user_id_2, ...],
-        "content": [movie_id_1, movie_id_2, ...]
-    }
+  "receivers_list": [user_id_1, user_id_2, ...],
+  "sender": "str",
+  "event_type": event_type,
+  "transport": ["sms", "push"],
+  "priority": 1,
+  "created_dt": created_dt,
+  "schedule": "5 4 * * *",
+  "start_date": null,
+  "payload": {
+    "header": "str",
+    "template": "str",
+    "body": {...}
+  }
 }
 ```
 где `event_type` представлен для типов событий:
@@ -35,54 +37,69 @@
 
 `schedule`, `start_date` - cron-значение и дата старта для начала отсылки периодических уведомлений.
 
+`payload` - информация для уведомления:
+    `body` - словарь данных уведомления
+    `template`* - шаблон для уведомления
+    `header`* - хедер сообщения
+
+* все-таки не должны быть тут - только сервис нотификации должен знать эту информацию, а не другие сервисы.
+
+
+
 
 ### Исходящие (подготовленные для воркера)
 ```json
 {
-    "event_type": event_type,
-    "created_dt": created_dt,
-    "transport_type": ["email", "sms", "push"],
-    "priority": 1,
-    "payload": {
-        "user": [
-          {
-            "user_id": user_id,
-            "last_name": last_name,
-            "first_name": first_name,
-            "email": email,
-            "birthday_date": birthday_date
-          }, ...
-        ],
-        "content": [
-          {
-            "movie_id": movie_id,
-            "title": title,
-            "season": null,
-            "episode": null,
-            "release_date": release_date
-          }, ...
-        ]
+  "_id": "str", # сквозное id из mongodb
+  "priority": 1,
+  "type": "transactional" # scheduled/transactional
+  "transport": {
+    "email": {
+      "address": "email",
+      "message": msg_obj
+    },
+    "sms": {
+      "number": "number",
+      "message": "str"
+    },
+    "push": {
+      "device": device_obj,
+      "message": "str"
     }
+  }
 }
 ```
 
 ## Описание работы
 ### Notification Event API
 1) Notification Event API (в дальнейшем просто API) является единой точкой входа для событий, по которым надо делать рассылку. 
-Представляет собой асинхронный FastAPI-сервис с одним эндоинтом для принятия событий 
-по шаблону из пункта `Модели данных Notification API - Входящие`.
-2) После получения события API дополняет информацию из Auth API + UGC API и формирует конечную модель.
+Представляет собой асинхронный FastAPI-сервис с эндпоинтами:
+   - регистрация события о нотификации по шаблону из пункта `Модели данных Notification API - Входящие`. *
+   - получение нотификации на отправку в шину RabbitMQ
+   - обновление статуса доставки сообщения
+   - регистрация списков рассылки (нужно решить, так ли необходимо ли)
+
+2) После получения события API сохраняет данные в MongoDB.
 3) Записывает данные в БД.
 4) Отсылает на воркер через шину RabbitMQ.
-5) В данном проекте для генерации начальных событий будет написан генератор событий вместо доработки Auth API + UGC API + Admin Panel.
+!!! В данном проекте для генерации начальных событий будет написан генератор событий вместо доработки Auth API + UGC API + Admin Panel.
 
 ### Генератор периодических событий
 1) Этот сервис так же, как и Notification Event API, является асинхронным FastAPI-сервис в связке с Celery как планировщиком.
-2) Данные для планирования берутся из БД.
-3) Планировщик должен уметь добавлять таски с динамически построенным расписанием 
-(вычитывается из полей start_day, schedule в формате cron).
-4) Celery при срабатывания расписания передает информацию генератору-API,
+(либо просто асинхронный сервис + Celery).
+2) Данные для планирования берутся из MongoDB.
+3) Данные обогащаются сервисом обогащения данных (может быть частью генератора)ю
+4) Celery имеет 2 очереди - realtime/scheduled.
+5) Планировщик должен уметь добавлять таски с динамически построенным расписанием 
+(вычитывается из полей start_day, schedule в формате cron) в scheduled.
+6) Планировщик должен уметь добавлять таски для отправки сообщений прямо сейчас в очередь realtime.
+7) Celery при срабатывании расписания передает информацию генератору,
 тот, в свою очередь, передает данные в Notification Event API.
+
+### Сервис обогащения данных (может быть частью генератора периодических событий)
+1) Получает запросы на обогащение данных, обрабатывает их, получает данные из Auth API + UGC API и передает дальше.
+По сути, формирует конечную форму нотификаций (см `Исходящие (подготовленные для воркера)`).
+!!! Надо решить, что с хедерами и шаблонами.
 
 ### Шина данных RabbitMQ
 1) Принимает информацию от Notification Event API и пересылает ее в воркер.
