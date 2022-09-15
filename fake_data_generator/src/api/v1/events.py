@@ -30,5 +30,4 @@ async def send_notification_event() -> NotificationEvent:
             movie_ids=[str(uuid.uuid4()) for i in range(0, randint(0, 10))]
         )
     )
-    print(event)
     return event
