@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     MONGO_TABLE_STATUS: str = Field(env="MONGO_TABLE_STATUS", default='notification_status')
 
     RABBIT_MQ_HOST: str = Field(env="RABBIT_MQ_HOST", default='127.0.0.1')
+    RABBIT_MQ_PORT: int = Field(env="RABBIT_MQ_PORT", default=5672)
+    RABBIT_MQ_USER: str = Field(env="RABBIT_MQ_USER", default='guest')
+    RABBIT_MQ_PASSWORD: str = Field(env="RABBIT_MQ_PASSWORD", default='guest')
 
 
 settings = Settings()

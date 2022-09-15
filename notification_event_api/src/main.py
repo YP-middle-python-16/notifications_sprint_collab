@@ -1,8 +1,8 @@
 import logging
 
-import pika
+import aio_pika
 import uvicorn
-from pymongo import MongoClient
+import motor.motor_asyncio
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from pymongo.errors import ServerSelectionTimeoutError
@@ -11,7 +11,6 @@ from core.config import settings
 from core.logger import configure_logging, LOGGING
 from db import mongo, rabbit_mq
 import backoff
-
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -26,10 +25,15 @@ app = FastAPI(
 @backoff.on_exception(backoff.expo, ServerSelectionTimeoutError, max_tries=3)
 async def startup():
     # create mongo connection
-    mongo.mongo_client = MongoClient(settings.MONGO_CONNECTION, serverSelectionTimeoutMS=1)
-    mongo.mongo_client.server_info()
+    mongo.mongo_client = await motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_CONNECTION,
+                                                                      serverSelectionTimeoutMS=1)
+    await mongo.mongo_client.server_info()
     # create rabbit_mq connection
-    rabbit_mq.connection = pika.BlockingConnection(pika.ConnectionParameters(settings.RABBIT_MQ_HOST))
+    # rabbit_mq.connection = pika.BlockingConnection(pika.ConnectionParameters(settings.RABBIT_MQ_HOST))
+    rabbit_mq.rabbit_mq_connection = await aio_pika.connect_robust(host=settings.RABBIT_MQ_HOST,
+                                                                   port=settings.RABBIT_MQ_PORT,
+                                                                   login=settings.RABBIT_MQ_USER,
+                                                                   password=settings.RABBIT_MQ_PASSWORD)
 
 
 # Подключаем роутер к серверу, указав префикс /v1/****

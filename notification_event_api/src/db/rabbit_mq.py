@@ -1,11 +1,10 @@
 from typing import Optional
 
+from aio_pika import RobustConnection
 
-from pika import BlockingConnection
-
-rabbit_mq_connection: Optional[BlockingConnection] = None
+rabbit_mq_connection: Optional[RobustConnection] = None
 
 
 # Функция понадобится при внедрении зависимостей
-async def get_rabbit_mq_connection() -> BlockingConnection:
+async def get_rabbit_mq_connection() -> RobustConnection:
     return rabbit_mq_connection
