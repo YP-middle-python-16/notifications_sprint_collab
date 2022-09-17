@@ -1,10 +1,10 @@
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from core.config import settings
 
 
 class DocService:
-    def __init__(self, mongo_client: MongoClient):
+    def __init__(self, mongo_client: AsyncIOMotorClient):
         self.mongo_client = mongo_client
         self.db = self.mongo_client[settings.MONGO_DB]
 

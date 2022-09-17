@@ -1,10 +1,10 @@
 from typing import Optional
 
-import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
 
-mongo_client: Optional[motor.motor_asyncio.AsyncIOMotorClient] = None
+mongo_client: Optional[AsyncIOMotorClient] = None
 
 
 # Функция понадобится при внедрении зависимостей
-async def get_mongo_client() -> motor.motor_asyncio.AsyncIOMotorClient:
+async def get_mongo_client() -> AsyncIOMotorClient:
     return mongo_client
