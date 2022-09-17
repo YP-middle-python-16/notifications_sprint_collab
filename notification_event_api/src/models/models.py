@@ -34,6 +34,11 @@ class NotificationEvent(ORJSONModel):
 
 class EnrichedNotification(ORJSONModel):
     _id: str
-    header: str
-    template: str
-    body: dict
+    priority: id
+    type: str
+    transport: dict
+
+
+class NotificationStatus(ORJSONModel):
+    _id: str
+    status: str

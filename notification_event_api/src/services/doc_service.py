@@ -1,6 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from core.config import settings
+from models.models import ORJSONModel
 
 
 class DocService:
@@ -8,11 +9,9 @@ class DocService:
         self.mongo_client = mongo_client
         self.db = self.mongo_client[settings.MONGO_DB]
 
-    async def insert(self, data, table: str):
-        data_dict = dict(data)
-
+    async def insert(self, data: ORJSONModel, table: str):
         collection = self.db[table]
-        doc_id = await collection.insert_one(data_dict).inserted_id
+        doc_id = await collection.insert_one(data.dict()).inserted_id
 
         return doc_id
 

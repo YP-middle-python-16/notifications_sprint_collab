@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from pymongo.errors import ServerSelectionTimeoutError
 
+from api.v1 import registrator, transmitter
 from core.config import settings
 from core.logger import configure_logging, LOGGING
 from db import mongo, rabbit_mq
@@ -39,7 +40,8 @@ async def startup():
 
 # Подключаем роутер к серверу, указав префикс /v1/****
 # Теги указываем для удобства навигации по документации
-app.include_router(events.router, prefix="/api/v1/event", tags=["NotificationEvent"])
+app.include_router(registrator.router, prefix='/api/v1/event', tags=['event', 'registration'])
+app.include_router(transmitter.router, prefix='/api/v1/delivery', tags=['notification', 'delivery'])
 
 if __name__ == '__main__':
     uvicorn.run(
