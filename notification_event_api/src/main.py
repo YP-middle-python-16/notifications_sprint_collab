@@ -1,3 +1,4 @@
+from asyncio.exceptions import TimeoutError
 import logging
 
 import aio_pika
@@ -22,7 +23,7 @@ app = FastAPI(
 
 
 @app.on_event('startup')
-@backoff.on_exception(backoff.expo, ServerSelectionTimeoutError, max_tries=3)
+@backoff.on_exception(backoff.expo, (ServerSelectionTimeoutError, TimeoutError), max_tries=3)
 async def startup():
     # create mongo connection
     mongo.mongo_client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_CONNECTION,
@@ -32,7 +33,8 @@ async def startup():
     rabbit_mq.rabbit_mq_connection = await aio_pika.connect_robust(host=settings.RABBIT_MQ_HOST,
                                                                    port=settings.RABBIT_MQ_PORT,
                                                                    login=settings.RABBIT_MQ_USER,
-                                                                   password=settings.RABBIT_MQ_PASSWORD)
+                                                                   password=settings.RABBIT_MQ_PASSWORD,
+                                                                   timeout=settings.RABBIT_MQ_CONN_TIMEOUT)
 
 
 # Подключаем роутер к серверу, указав префикс /v1/****
