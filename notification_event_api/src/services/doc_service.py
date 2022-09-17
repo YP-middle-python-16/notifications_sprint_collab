@@ -12,18 +12,20 @@ class DocService:
         data_dict = dict(data)
 
         collection = self.db[table]
-        doc_id = collection.insert_one(data_dict).inserted_id
+        doc_id = await collection.insert_one(data_dict).inserted_id
 
         return doc_id
 
     async def select(self, query, table: str):
         collection = self.db[table]
-        return [doc for doc in collection.find(query)]
+        result = await collection.find(query)
+        return list(result)
 
-    async def view_all(self, table: str):
+    async def view_all(self, table: str) -> list:
         collection = self.db[table]
-        return [doc for doc in collection.find()]
+        result = await collection.find()
+        return list(result)
 
-    async def count(self, query , table: str):
+    async def count(self, query, table: str) -> int:
         collection = self.db[table]
-        return collection.count_documents(query)
+        return await collection.count_documents(query)
