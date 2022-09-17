@@ -25,11 +25,10 @@ app = FastAPI(
 @backoff.on_exception(backoff.expo, ServerSelectionTimeoutError, max_tries=3)
 async def startup():
     # create mongo connection
-    mongo.mongo_client = await motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_CONNECTION,
-                                                                      serverSelectionTimeoutMS=1)
+    mongo.mongo_client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_CONNECTION,
+                                                                serverSelectionTimeoutMS=1)
     await mongo.mongo_client.server_info()
     # create rabbit_mq connection
-    # rabbit_mq.connection = pika.BlockingConnection(pika.ConnectionParameters(settings.RABBIT_MQ_HOST))
     rabbit_mq.rabbit_mq_connection = await aio_pika.connect_robust(host=settings.RABBIT_MQ_HOST,
                                                                    port=settings.RABBIT_MQ_PORT,
                                                                    login=settings.RABBIT_MQ_USER,
@@ -38,7 +37,7 @@ async def startup():
 
 # Подключаем роутер к серверу, указав префикс /v1/****
 # Теги указываем для удобства навигации по документации
-app.include_router(events.router, prefix="/api/v1/event", tags=["Event"])
+app.include_router(events.router, prefix="/api/v1/event", tags=["NotificationEvent"])
 
 if __name__ == '__main__':
     uvicorn.run(
