@@ -1,4 +1,5 @@
-from typing import Any
+from datetime import datetime
+from typing import Any, Optional
 
 import orjson
 from pydantic import BaseModel
@@ -14,7 +15,25 @@ class ORJSONModel(BaseModel):
         json_dumps = orjson_dumps
 
 
+class StatusMessage(ORJSONModel):
+    head: str
+    body: str
+
+
+class NotificationEvent(ORJSONModel):
+    receivers_list: list[str]
+    sender: str
+    event_type: str
+    transport: Optional[list[str]]
+    priority: int
+    created_dt: datetime
+    schedule: Optional[str]
+    start_date: Optional[datetime]
+    payload: dict
+
+
 class EnrichedNotification(ORJSONModel):
     _id: str
     header: str
-    body: str
+    template: str
+    body: dict
