@@ -11,7 +11,7 @@ services:
 #      --worker-class uvicorn.workers.UvicornWorker
 #      --bind 0.0.0.0:8000 --reload'
 #    env_file:
-#      - api_app/src/core/.env.dev
+#      - api_app/src/core/.env
 #    logging:
 #      driver: "json-file"
 #      options:
@@ -54,3 +54,22 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s
+
+  rabbitmq3:
+    image: rabbitmq:3.8-management-alpine
+    container_name: "rabbitmq3"
+    restart: always
+    env_file:
+      - rabbitmq/.env
+    volumes:
+      - ./rabbitmq/data:/data
+    ports:
+      # AMQP protocol port
+      - "5672:5672"
+      # HTTP management UI
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
