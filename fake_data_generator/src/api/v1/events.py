@@ -38,7 +38,8 @@ async def send_notification_event() -> NotificationEvent:
         },
     )
     async with aiohttp.ClientSession() as session:
-        async with session.post(settings.SEND_EVENT_ENDPOINT, json=event.dict()) as response:
+        url = f'http://{settings.NOTIFICATION_HOST.rstrip("/")}:{settings.NOTIFICATION_PORT}/{settings.SEND_EVENT_ENDPOINT.lstrip("/")}'  # noqa E501
+        async with session.post(url, json=event.dict()) as response:
             response.raise_for_status()
 
     return event
