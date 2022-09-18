@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = Field(env='PROJECT_NAME', default='NOTIFICATION_API')
 
     # mongo settings
-    MONGO_CONNECTION: str = Field(env="MONGO_CONNECTION", default="mongodb://root:example@localhost:27017/")
-    MONGO_DB: str = Field(env="MONGO_DB", default='UGC')
+    MONGO_CONNECTION: str = Field(env="MONGO_CONNECTION", default="mongodb://localhost:27017/")
+    MONGO_DB: str = Field(env="MONGO_DB", default='NOTIFICATIONS')
 
     MONGO_TABLE_RAW: str = Field(env="MONGO_TABLE_RAW", default='raw_notifications')
     MONGO_TABLE_ENRICHED: str = Field(env="MONGO_TABLE_ENRICHED", default='enriched_notifications')
@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     RABBIT_MQ_USER: str = Field(env="RABBIT_MQ_USER", default='guest')
     RABBIT_MQ_PASSWORD: str = Field(env="RABBIT_MQ_PASSWORD", default='guest')
     RABBIT_MQ_CONN_TIMEOUT: int = Field(env="RABBIT_MQ_CONN_TIMEOUT", default=5)
+
+    CHECK_HEADERS: bool = Field(env="CHECK_HEADERS", default=False)
 
 
 settings = Settings()
