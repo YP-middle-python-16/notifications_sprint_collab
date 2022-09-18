@@ -1,13 +1,12 @@
 import datetime
 from random import randint, getrandbits
 
-from faker import Faker
 from fastapi import APIRouter
 
+from . import fake
 from models.models import UserInfo, MovieInfo
 
 router = APIRouter()
-fake = Faker()
 
 
 @router.post("/auth/users",

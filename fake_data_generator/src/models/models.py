@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Any, Optional
 
 import orjson
@@ -15,18 +14,15 @@ class ORJSONModel(BaseModel):
         json_dumps = orjson_dumps
 
 
-class Payload(ORJSONModel):
-    user_ids: list[str]
-    movie_ids: Optional[list[str]]
-
-
 class NotificationEvent(ORJSONModel):
+    receivers_list: list[str]
+    sender: str
     event_type: str
-    created_dt: datetime
-    schedule: Optional[str]
-    start_dt: Optional[datetime]
+    transport: Optional[list[str]]
     priority: int
-    payload: Payload
+    schedule: Optional[str]
+    start_date: Optional[str]
+    payload: dict
 
 
 class UserInfo(ORJSONModel):
@@ -34,7 +30,7 @@ class UserInfo(ORJSONModel):
     last_name: str
     first_name: str
     email: str
-    birthday_date: Optional[datetime]
+    birthday_date: Optional[str]
 
 
 class MovieInfo(ORJSONModel):
@@ -42,4 +38,4 @@ class MovieInfo(ORJSONModel):
     title: str
     season: Optional[int]
     episode: Optional[int]
-    release_date: Optional[datetime]
+    release_date: Optional[str]
