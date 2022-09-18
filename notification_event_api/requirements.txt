@@ -7,3 +7,4 @@ backoff==2.1.2
 aio-pika==8.2.1
 motor==3.0.0
 async-property==0.2.1
+asgi-correlation-id==3.0.1
