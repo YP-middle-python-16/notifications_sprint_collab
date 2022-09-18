@@ -33,7 +33,7 @@ class NotificationEvent(ORJSONModel):
 
 class EnrichedNotification(ORJSONModel):
     _id: str
-    priority: id
+    priority: int
     type: str
     transport: dict
 
