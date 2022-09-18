@@ -15,6 +15,6 @@ router = APIRouter()
 )
 async def send_notification_to_broker(event: EnrichedNotification,
                                       broker_service: EventService = Depends(get_event_service)) -> StatusMessage:
-    await broker_service.send_message(event, event.priority)
+    await broker_service.send_message(event, str(event.priority))
 
     return StatusMessage(head='status', body=f'Event {event._id} was sent')

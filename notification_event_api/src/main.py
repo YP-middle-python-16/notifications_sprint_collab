@@ -1,16 +1,19 @@
+import uuid
 from asyncio.exceptions import TimeoutError
 import logging
 
 import aio_pika
 import uvicorn
 import motor.motor_asyncio
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 from pymongo.errors import ServerSelectionTimeoutError
+from asgi_correlation_id import CorrelationIdMiddleware
+from asgi_correlation_id.middleware import is_valid_uuid4
 
 from api.v1 import registrator, transmitter
 from core.config import settings
-from core.logger import configure_logging, LOGGING
+from core.logger import configure_logging, LOGGING, logger
 from db import mongo, rabbit_mq
 import backoff
 
@@ -40,8 +43,33 @@ async def startup():
 
 # Подключаем роутер к серверу, указав префикс /v1/****
 # Теги указываем для удобства навигации по документации
-app.include_router(registrator.router, prefix='/api/v1/event', tags=['event', 'registration'])
-app.include_router(transmitter.router, prefix='/api/v1/delivery', tags=['notification', 'delivery'])
+app.include_router(registrator.router, prefix='/api/v1/event', tags=['event_registration'])
+app.include_router(transmitter.router, prefix='/api/v1/delivery', tags=['delivery_info'])
+
+
+@app.middleware('http')
+async def request_processing(request: Request, call_next):
+    # check header
+    request_id = request.headers.get("X-Request-Id")
+    if settings.CHECK_HEADERS and not request_id:
+        raise RuntimeError("request id is required")
+    response = await call_next(request)
+    # add tag for logs
+    custom_logger = logging.LoggerAdapter(
+        logger, extra={'tag': 'ugc_api', 'request_id': request_id}
+    )
+    custom_logger.info(request)
+    return response
+
+# Добавим middleware для работы с X-Request-Id (https://github.com/snok/asgi-correlation-id)
+app.add_middleware(
+    CorrelationIdMiddleware,
+    header_name="X-Request-ID",
+    generator=lambda: uuid.uuid4().hex,
+    validator=is_valid_uuid4,
+    transformer=lambda a: a,
+)
+
 
 if __name__ == '__main__':
     uvicorn.run(
