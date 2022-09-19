@@ -16,6 +16,7 @@ router = APIRouter()
 )
 async def insert_notification_event(event: NotificationEvent,
                                     storage_service: DocService = Depends(get_storage_service)) -> StatusMessage:
+
     event_id = await storage_service.insert(event, settings.MONGO_TABLE_RAW)
 
     return StatusMessage(head='status', body=f'Event {event_id} was registered')

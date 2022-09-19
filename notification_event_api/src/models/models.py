@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Optional
 
 import orjson
@@ -25,7 +26,7 @@ class NotificationEvent(ORJSONModel):
     event_type: str
     transport: Optional[list[str]]
     priority: int
-    created_dt: str
+    created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
     payload: dict

@@ -20,6 +20,7 @@ class NotificationEvent(ORJSONModel):
     event_type: str
     transport: Optional[list[str]]
     priority: int
+    created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
     payload: dict
