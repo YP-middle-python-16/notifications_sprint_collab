@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     RABBIT_MQ_PORT: int = Field(env="RABBIT_MQ_PORT", default=5672)
     RABBIT_MQ_USER: str = Field(env="RABBIT_MQ_USER", default='guest')
     RABBIT_MQ_PASSWORD: str = Field(env="RABBIT_MQ_PASSWORD", default='guest')
-    RABBIT_MQ_CONN_TIMEOUT: int = Field(env="RABBIT_MQ_CONN_TIMEOUT", default=5)
+    RABBIT_MQ_CONN_TIMEOUT: int = Field(env="RABBIT_MQ_CONN_TIMEOUT", default=10)
 
     CHECK_HEADERS: bool = Field(env="CHECK_HEADERS", default=False)
 
