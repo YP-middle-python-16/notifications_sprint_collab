@@ -1,13 +1,12 @@
 import datetime
 from random import randint, getrandbits
 
-from faker import Faker
 from fastapi import APIRouter
 
+from . import fake
 from models.models import UserInfo, MovieInfo
 
 router = APIRouter()
-fake = Faker()
 
 
 @router.post("/auth/users",
@@ -20,7 +19,8 @@ async def send_user_info(user_id: str):
         last_name=fake.last_name(),
         first_name=fake.first_name(),
         email=f'{fake.word()}@yandex.ru',
-        birthday_date=datetime.datetime.now() - datetime.timedelta(days=365 * randint(5, 65)),
+        birthday_date=(datetime.datetime.now() - datetime.timedelta(
+            days=365 * randint(5, 65))).strftime('%Y-%m-%d %H:%M:%S.%f'),
     )
 
 
@@ -34,5 +34,5 @@ async def send_movie_info(movie_id: str):
         title=' '.join([fake.word() for i in range(randint(1, 5))]),
         season=randint(0, 5) if getrandbits else None,
         episode=randint(1, 100),
-        release_date=datetime.datetime.now() + datetime.timedelta(days=randint(0, 7))
+        release_date=(datetime.datetime.now() + datetime.timedelta(days=randint(0, 7))).strftime('%Y-%m-%d %H:%M:%S.%f')
     )

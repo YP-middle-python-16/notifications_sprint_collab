@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Optional
 
 import orjson
@@ -14,6 +15,11 @@ class ORJSONModel(BaseModel):
         json_dumps = orjson_dumps
 
 
+class StatusMessage(ORJSONModel):
+    head: str
+    body: str
+
+
 class NotificationEvent(ORJSONModel):
     receivers_list: list[str]
     sender: str
@@ -26,17 +32,13 @@ class NotificationEvent(ORJSONModel):
     payload: dict
 
 
-class UserInfo(ORJSONModel):
-    user_id: str
-    last_name: str
-    first_name: str
-    email: str
-    birthday_date: Optional[str]
+class EnrichedNotification(ORJSONModel):
+    _id: str
+    priority: int
+    type: str
+    transport: dict
 
 
-class MovieInfo(ORJSONModel):
-    movie_id: str
-    title: str
-    season: Optional[int]
-    episode: Optional[int]
-    release_date: Optional[str]
+class NotificationStatus(ORJSONModel):
+    _id: str
+    status: str
