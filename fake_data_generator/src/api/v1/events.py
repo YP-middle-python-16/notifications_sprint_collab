@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from random import choice, getrandbits, randint
 
 import aiohttp
-from fastapi import APIRouter
+from fastapi import APIRouter, logger
 from fastapi_utils.tasks import repeat_every
 
 from core.config import settings
@@ -44,7 +44,7 @@ async def send_notification_event() -> NotificationEvent:
             async with session.post(url, data=event.json()) as response:
                 response.raise_for_status()
     except Exception as e:
-        print('!!!!!!!!!!!!!!!!', e)
+        logger.logger.error('!!!!!!!!!!!!!!!!' + str(e))
         raise
 
     return event
