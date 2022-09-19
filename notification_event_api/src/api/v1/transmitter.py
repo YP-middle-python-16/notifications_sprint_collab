@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 
+from core.logger import logger
 from models.models import StatusMessage, EnrichedNotification
 from services.event_service import EventService
 from services.service_locator import get_event_service
@@ -16,5 +17,5 @@ router = APIRouter()
 async def send_notification_to_broker(event: EnrichedNotification,
                                       broker_service: EventService = Depends(get_event_service)) -> StatusMessage:
     await broker_service.send_message(event, str(event.priority))
-
-    return StatusMessage(head='status', body=f'Event {event._id} was sent')
+    logger.info(f'event {event._id} has been sent to RabbitMQ')
+    return StatusMessage(head='status', body=f'Event {event._id} has been sent')

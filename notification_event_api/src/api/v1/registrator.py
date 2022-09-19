@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from core.config import settings
+from core.logger import logger
 from models.models import StatusMessage, NotificationEvent, NotificationStatus
 from services.doc_service import DocService
 from services.service_locator import get_storage_service
@@ -18,7 +19,7 @@ async def insert_notification_event(event: NotificationEvent,
                                     storage_service: DocService = Depends(get_storage_service)) -> StatusMessage:
 
     event_id = await storage_service.insert(event, settings.MONGO_TABLE_RAW)
-
+    logger.info(f'event {event_id} has been inserted to MondoDB with data: {event.dict()}')
     return StatusMessage(head='status', body=f'Event {event_id} was registered')
 
 
@@ -32,5 +33,6 @@ async def update_notification_status(event_id: str, status: str,
                                      storage_service: DocService = Depends(get_storage_service)) -> NotificationStatus:
     msg = NotificationStatus(id=event_id, status=status)
     await storage_service.insert(msg, settings.MONGO_TABLE_STATUS)
+    logger.info(f'event {event_id} has been updated with status={status} to MondoDB')
 
     return msg
