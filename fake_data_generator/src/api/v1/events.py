@@ -37,9 +37,13 @@ async def send_notification_event() -> NotificationEvent:
             'timezone': 'Europe/Moscow',
         },
     )
-    async with aiohttp.ClientSession() as session:
-        url = f'http://{settings.NOTIFICATION_HOST.rstrip("/")}:{settings.NOTIFICATION_PORT}/{settings.SEND_EVENT_ENDPOINT.lstrip("/")}'  # noqa E501
-        async with session.post(url, json=event.dict()) as response:
-            response.raise_for_status()
+    try:
+        async with aiohttp.ClientSession() as session:
+            url = f'http://{settings.NOTIFICATION_HOST.rstrip("/")}:{settings.NOTIFICATION_PORT}/{settings.SEND_EVENT_ENDPOINT.lstrip("/")}'  # noqa E501
+            async with session.post(url, json=event.dict()) as response:
+                response.raise_for_status()
+    except Exception as e:
+        print('!!!!!!!!!!!!!!!!', e)
+        raise
 
     return event
