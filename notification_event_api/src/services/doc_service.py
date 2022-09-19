@@ -11,9 +11,9 @@ class DocService:
 
     async def insert(self, data: ORJSONModel, table: str):
         collection = self.db[table]
-        doc_id = await collection.insert_one(data.dict()).inserted_id
+        doc_id = await collection.insert_one(data.dict())
 
-        return doc_id
+        return doc_id.inserted_id
 
     async def select(self, query, table: str):
         collection = self.db[table]

@@ -27,7 +27,7 @@ app = FastAPI(
 
 
 @app.on_event('startup')
-@backoff.on_exception(backoff.expo, (ServerSelectionTimeoutError, TimeoutError), max_tries=3)
+@backoff.on_exception(backoff.expo, (ServerSelectionTimeoutError, TimeoutError, ConnectionRefusedError), max_tries=3)
 async def startup():
     # create mongo connection
     mongo.mongo_client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_CONNECTION,
