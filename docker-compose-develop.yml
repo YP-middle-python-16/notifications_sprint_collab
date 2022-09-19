@@ -12,20 +12,20 @@ services:
       --bind 0.0.0.0:8000 --reload'
     env_file:
       - notification_event_api/src/core/.env.dev
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-file: "10"
-#        max-size: "10m"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "10m"
     depends_on:
       - mongo
       - rabbitmq3
-#    healthcheck:
-#      test: nc -z kafka-1 9092 || nc -z kafka-2 9092 || exit -1
-#      start_period: 15s
-#      interval: 5s
-#      timeout: 10s
-#      retries: 10
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet && rabbitmq-diagnostics -q ping
+      start_period: 15s
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   nginx:
     image: nginx:1.21.6
