@@ -27,6 +27,20 @@ services:
       timeout: 10s
       retries: 10
 
+  data_generator:
+    build: fake_data_generator
+    restart: always
+    container_name: data_generator
+    ports:
+      - "8004:8000"
+    command: bash -c 'gunicorn main:app --workers 4
+      --worker-class uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:8000 --reload'
+    env_file:
+      - fake_data_generator/src/core/.env
+    depends_on:
+      - api
+
   nginx:
     image: nginx:1.21.6
     container_name: nginx

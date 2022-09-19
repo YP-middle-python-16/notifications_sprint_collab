@@ -22,5 +22,4 @@ RUN pip install --user -r requirements.txt
 ENV PATH="/home/app/.local/bin:${PATH}"
 
 COPY --chown=app:app ./src .
-COPY --chown=app:app ./tests tests
 RUN ls
