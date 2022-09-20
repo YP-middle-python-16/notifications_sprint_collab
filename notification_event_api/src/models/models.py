@@ -1,4 +1,3 @@
-import datetime
 from typing import Any, Optional
 
 import orjson
@@ -20,6 +19,12 @@ class StatusMessage(ORJSONModel):
     body: str
 
 
+class Payload(ORJSONModel):
+    header: str
+    template: str
+    body: Optional[dict]
+
+
 class NotificationEvent(ORJSONModel):
     receivers_list: list[str]
     sender: str
@@ -29,7 +34,7 @@ class NotificationEvent(ORJSONModel):
     created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
-    payload: dict
+    payload: Payload
 
 
 class EnrichedNotification(ORJSONModel):
