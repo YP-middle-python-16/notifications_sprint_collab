@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10"]
+
     steps:
       - uses: actions/checkout@v2
 
@@ -37,7 +38,7 @@ jobs:
       #  run: |
       #    PYTHONPATH="api_app/src" python -m pytest api_app/tests
 
-      -name: Send success message to Telegram
+      - name: Send success message to Telegram
         if: success()
         uses: appleboy/telegram-action@master
           with:
@@ -49,7 +50,7 @@ jobs:
               Commit message: ${{ github.event.commits[0].message }}
               See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
-      -name: Send fail message to Telegram
+      - name: Send fail message to Telegram
         if: failure()
         uses: appleboy/telegram-action@master
           with:
