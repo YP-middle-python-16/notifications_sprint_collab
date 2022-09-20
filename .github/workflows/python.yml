@@ -61,4 +61,3 @@ jobs:
             ${{ github.action }}.
             Commit message: ${{ github.event.commits[0].message }}
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-            ${{ build.result}}
