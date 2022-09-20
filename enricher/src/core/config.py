@@ -8,5 +8,7 @@ class Settings(BaseSettings):
     USER_INFO_ENDPOINT: str = Field(env='USER_INFO_ENDPOINT', default='/api/v1/info/auth/users')
     CONTENT_INFO_ENDPOINT: str = Field(env='CONTENT_INFO_ENDPOINT', default='/api/v1/info/auth/movies')
 
+    TEMPLATE_PATH: str = Field(env='TEMPLATE_PATH', default='./')  # не забыть шарить вольюм
+
 
 settings = Settings()
