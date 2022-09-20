@@ -1,4 +1,4 @@
-name: Python application
+name: Notification application
 
 on:
   push:
@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10"]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -61,5 +60,3 @@ jobs:
               ${{ github.action }}.
               Commit message: ${{ github.event.commits[0].message }}
               See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-
-
