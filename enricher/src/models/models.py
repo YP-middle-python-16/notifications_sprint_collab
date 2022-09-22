@@ -27,7 +27,7 @@ class Email(ORJSONModel):
 
 
 class Push(ORJSONModel):
-    device: str
+    device: Optional[str]
     message: str
 
 
