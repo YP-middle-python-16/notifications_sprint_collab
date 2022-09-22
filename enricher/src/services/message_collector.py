@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from models.models import RawNotification, FinalNotification
 from services.storage.base import BaseStorage
 from services.transport import (
@@ -24,11 +26,11 @@ class MessageCollector:
         }[transport_type.lower()]
 
     async def get_final_notifications(self) -> FinalNotification:
-        transport_msg = []
+        transport_msg = defaultdict(list)
         for transport_type in self.notification.transport:
             transport: BaseTransport = self.get_transport_class(transport_type)(notification=self.notification,
                                                                                 storage_service=self.storage_service)
-            transport_msg.append(transport.prepare_message())
+            transport_msg[transport_type].append(transport.prepare_message())
 
         return FinalNotification(_id=self.notification_id,
                                  priority=self.notification.priority,

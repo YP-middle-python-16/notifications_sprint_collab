@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Dict
 
 import orjson
 from pydantic import BaseModel
@@ -59,4 +59,4 @@ class FinalNotification(ORJSONModel):
     _id: str
     priority: int
     type: str = 'transactional'
-    transport: list[Union[SMS, Email, Push]]
+    transport: Dict[str, list[Union[SMS, Email, Push]]]
