@@ -1,27 +1,24 @@
-import aiohttp
-from fastapi import APIRouter, logger
+from fastapi import APIRouter, Depends
 
-from core.config import settings
-from models.models import RawNotification, FinishedNotification
+from models.models import RawNotification, FinalNotification
+from services.message_collector import MessageCollector
+from services.service_locator import get_storage_service
+from services.storage.base import BaseStorage
 
 router = APIRouter()
 
 
 @router.post('/{notification_id}',
-             response_model=FinishedNotification,
+             response_model=FinalNotification,
              summary='Enrich notification',
              description='Enrich notification')
-async def enrich(notification_id: str, notification: RawNotification) -> FinishedNotification:
-    # todo тут надо словить body из пэйлоада, receivers_list по транспорту (будем считать, что для одного получателя)
-    #  и по нему запросить инфу, формируя конечный context dict
+async def enrich(notification_id: str,
+                 notification: RawNotification,
+                 type: str = 'transactional',
+                 storage_service: BaseStorage = Depends(get_storage_service)) -> FinalNotification:
+    msg_collector = MessageCollector(notification_id=notification_id,
+                                     notification=notification,
+                                     type=type,
+                                     storage_service=storage_service)
 
-    try:
-        async with aiohttp.ClientSession(headers={'Content-Type': 'application/json'}) as session:
-            url = f'http://{settings.NOTIFICATION_HOST.rstrip("/")}:{settings.NOTIFICATION_PORT}/{settings.SEND_EVENT_ENDPOINT.lstrip("/")}'  # noqa E501
-            async with session.post(url, data=event.json()) as response:
-                response.raise_for_status()
-    except Exception as e:
-        logger.logger.error('!!!!!!!!!!!!!!!!' + str(e))
-        raise
-
-    return event
+    return await msg_collector.get_final_notifications()

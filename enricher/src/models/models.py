@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import orjson
 from pydantic import BaseModel
@@ -37,12 +37,6 @@ class Transport(ORJSONModel):
     push: Optional[Push]
 
 
-class FinishedNotification(ORJSONModel):
-    _id: str
-    type: Optional[str]
-    transport: Transport
-
-
 class Payload(ORJSONModel):
     header: str
     template: str
@@ -59,3 +53,10 @@ class RawNotification(ORJSONModel):
     schedule: Optional[str]
     start_date: Optional[str]
     payload: Payload
+
+
+class FinalNotification(ORJSONModel):
+    _id: str
+    priority: int
+    type: str = 'transactional'
+    transport: list[Union[SMS, Email, Push]]
