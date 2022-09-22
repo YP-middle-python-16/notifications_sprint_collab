@@ -19,6 +19,8 @@ async def send_user_info(user_id: str):
         last_name=fake.last_name(),
         first_name=fake.first_name(),
         email=f'{fake.word()}@yandex.ru',
+        telephone_number=fake.phone_number(),
+        device_info=['device 1'],
         birthday_date=(datetime.datetime.now() - datetime.timedelta(
             days=365 * randint(5, 65))).strftime('%Y-%m-%d %H:%M:%S.%f'),
     )
