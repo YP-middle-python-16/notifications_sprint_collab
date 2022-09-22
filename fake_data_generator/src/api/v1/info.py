@@ -3,16 +3,16 @@ from random import randint, getrandbits
 
 from fastapi import APIRouter
 
-from . import fake
 from models.models import UserInfo, MovieInfo
+from . import fake
 
 router = APIRouter()
 
 
-@router.post("/auth/users",
-             response_model=UserInfo,
-             summary="Send user info",
-             description="Send user info")
+@router.get("/auth/users",
+            response_model=UserInfo,
+            summary="Send user info",
+            description="Send user info")
 async def send_user_info(user_id: str):
     return UserInfo(
         user_id=user_id,
@@ -24,10 +24,10 @@ async def send_user_info(user_id: str):
     )
 
 
-@router.post("/auth/movies",
-             response_model=MovieInfo,
-             summary="Send event to make notification",
-             description="Send event to make notification")
+@router.get("/auth/movies",
+            response_model=MovieInfo,
+            summary="Send event to make notification",
+            description="Send event to make notification")
 async def send_movie_info(movie_id: str):
     return MovieInfo(
         movie_id=movie_id,
