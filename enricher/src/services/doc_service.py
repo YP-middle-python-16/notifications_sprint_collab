@@ -7,7 +7,7 @@ from models.models import ORJSONModel
 class DocService:
     def __init__(self, mongo_client: AsyncIOMotorClient):
         self.mongo_client = mongo_client
-        self.db = self.mongo_client[settings.MONGO_DB]
+        self.db = self.mongo_client[settings.MONGO_TEMPLATE_DB]
 
     async def insert(self, data: ORJSONModel, table: str):
         collection = self.db[table]

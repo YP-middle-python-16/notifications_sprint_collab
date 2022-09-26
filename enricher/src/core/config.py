@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     USER_INFO_ENDPOINT: str = Field(env='USER_INFO_ENDPOINT', default='/api/v1/info/auth/users?user_id')
     CONTENT_INFO_ENDPOINT: str = Field(env='CONTENT_INFO_ENDPOINT', default='/api/v1/info/auth/movies?movie_id')
 
+    MONGO_CONNECTION: str = Field(env="MONGO_CONNECTION", default="mongodb://localhost:27017/")
     MONGO_TEMPLATE_DB: str = Field(env='MONGO_TEMPLATE_DB', default='templates')
 
 
