@@ -1,5 +1,5 @@
-from abc import abstractmethod
 import typing as t
+from abc import abstractmethod
 
 import aiohttp
 from jinja2 import Template
@@ -22,10 +22,11 @@ class BaseTransport:
         Чтение шаблона jinja из хранилища
         :param transport_type: [sms, push, email]
         """
-        template = await self.storage_service.select({'name': self.template_name,
-                                                      'transport': transport_type}, settings.MONGO_TEMPLATE_TABLE)
+        template_list = await self.storage_service.select({'name': self.template_name,
+                                                           'transport': transport_type}, settings.MONGO_TEMPLATE_TABLE)
+        template = template_list.pop()
         env = NativeEnvironment()
-        return env.from_string(template)
+        return env.from_string(template['body'])
 
     @abstractmethod
     async def prepare_message(self, *args, **kwargs):
