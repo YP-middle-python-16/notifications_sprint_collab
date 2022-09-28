@@ -22,8 +22,8 @@ class BaseTransport:
         Чтение шаблона jinja из хранилища
         :param transport_type: [sms, push, email]
         """
-        template_name = f'{self.template_name}_{transport_type}'
-        template = await self.storage_service.select({'template': template_name}, settings.MONGO_TEMPLATE_DB)
+        template = await self.storage_service.select({'name': self.template_name,
+                                                      'transport': transport_type}, settings.MONGO_TEMPLATE_TABLE)
         env = NativeEnvironment()
         return env.from_string(template)
 
