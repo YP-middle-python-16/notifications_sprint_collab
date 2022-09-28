@@ -29,7 +29,7 @@ class MessageCollector:
         transport_msg = defaultdict(list)
         transport: BaseTransport = self.get_transport_class(self.notification.transport)(notification=self.notification,
                                                                                          storage_service=self.storage_service)
-        transport_msg[self.notification.transport].append(await transport.prepare_message())
+        transport_msg[self.notification.transport] = await transport.prepare_message()
 
         return FinalNotification(_id=self.notification_id,
                                  priority=self.notification.priority,
