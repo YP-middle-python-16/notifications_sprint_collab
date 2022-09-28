@@ -6,9 +6,9 @@ class PushTransport(BaseTransport):
     async def prepare_message(self):
         template = await self.get_template('push')
 
-        receivers_info_list: list[dict] = list(self.get_receivers_info())
-        movies_info_list: list[dict] = list(self.get_movies_info())
-        user_info_list: list[dict] = list(self.get_users_info())
+        receivers_info_list: list[dict] = await self.get_receivers_info()
+        movies_info_list: list[dict] = await self.get_movies_info()
+        user_info_list: list[dict] = await self.get_users_info()
 
         return [Push(device=receiver['device_info'],
                      message=template.render(*movies_info_list,

@@ -56,26 +56,37 @@ class BaseTransport:
         """
         return await self._get_info(settings.USER_INFO_ENDPOINT, movie_id)
 
-    async def get_receivers_info(self) -> t.Generator:
+    async def get_receivers_info(self) -> t.List:
         """
         Получение информации о всех получателях, указанных в событии
         """
         receivers_list = self.notification.receivers_list
+        result = []
         for receiver_id in receivers_list:
-            yield self._get_user_info(receiver_id)
+            result.append(await self._get_user_info(receiver_id))
 
-    async def get_users_info(self) -> t.Generator:
+        return result
+
+    async def get_users_info(self) -> t.List:
         """
         Получение информации о всех пользователях, указанных в событии
         """
-        user_id_list = self.notification.payload.body.get('user_ids')
-        for user_id in user_id_list:
-            yield self._get_user_info(user_id)
+        user_id_list = self.notification.payload.body.get('user_ids', [])
 
-    async def get_movies_info(self) -> t.Generator:
+        result = []
+        for user_id in user_id_list:
+            result.append(await self._get_user_info(user_id))
+
+        return result
+
+    async def get_movies_info(self) -> t.List:
         """
         Получение информации о всех фильмах, указанных в событии
         """
         movie_ids: t.Union[list] = self.notification.payload.body.get('movie_ids', [])
+
+        result = []
         for movie_id in movie_ids:
-            yield self._get_movie_info(movie_id)
+            result.append(await self._get_movie_info(movie_id))
+
+        return result
