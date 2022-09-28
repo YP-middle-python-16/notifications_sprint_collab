@@ -49,18 +49,27 @@
   "priority": 1,
   "type": "transactional" # scheduled/transactional
   "transport": {
-    "email": {
-      "address": "email",
-      "message": msg_obj
-    },
-    "sms": {
-      "number": "number",
-      "message": "str"
-    },
-    "push": {
-      "device": device_obj,
-      "message": "str"
-    }
+    "email": [
+      {      
+        "address": "email",
+        "message": msg_obj
+      }
+      ...
+    ],
+    "sms": [
+      {
+        "number": "number",
+        "message": "str"
+      }
+      ...
+    ],
+    "push": [
+      {
+        "device": device_obj,
+        "message": "str"
+      }
+      ...
+    ]
   }
 }
 ```
