@@ -59,4 +59,4 @@ class FinalNotification(ORJSONModel):
     _id: str
     priority: int
     type: str = 'transactional'
-    transport: Dict[str, Union[SMS, Email, Push]]
+    transport: Dict[str, list]
