@@ -14,9 +14,7 @@ class ORJSONModel(BaseModel):
         json_dumps = orjson_dumps
 
 
-class StatusMessage(ORJSONModel):
-    head: str
-    body: str
+
 
 
 class Payload(ORJSONModel):

@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 message = {
     "_id": "str",
+    "notification_id": "str",
     "priority": "hight",
     "type": "transactional",
     "transport": {
