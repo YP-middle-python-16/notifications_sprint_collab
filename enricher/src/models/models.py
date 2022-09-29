@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union, Dict
+from typing import Any, Optional, Dict
 
 import orjson
 from pydantic import BaseModel
@@ -44,6 +44,7 @@ class Payload(ORJSONModel):
 
 
 class RawNotification(ORJSONModel):
+    notification_id: str
     receivers_list: list[str]
     sender: str
     event_type: str
@@ -56,7 +57,7 @@ class RawNotification(ORJSONModel):
 
 
 class FinalNotification(ORJSONModel):
-    _id: str
+    notification_id: str
     priority: int
     type: str = 'transactional'
     transport: Dict[str, list]

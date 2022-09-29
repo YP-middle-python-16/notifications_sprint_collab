@@ -45,7 +45,7 @@
 ### Исходящие (подготовленные для воркера)
 ```json
 {
-  "_id": "str", # сквозное id из mongodb
+  "notification_id": "str", # сквозное id, генерится перед тем, как положить нотификацию в монго
   "priority": 1,
   "type": "transactional" # scheduled/transactional
   "transport": {
