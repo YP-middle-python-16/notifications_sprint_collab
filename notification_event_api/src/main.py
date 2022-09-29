@@ -1,5 +1,4 @@
 import uuid
-from asyncio.exceptions import TimeoutError
 import logging
 
 import aio_pika
@@ -7,7 +6,6 @@ import uvicorn
 import motor.motor_asyncio
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
-from pymongo.errors import ServerSelectionTimeoutError
 from asgi_correlation_id import CorrelationIdMiddleware
 from asgi_correlation_id.middleware import is_valid_uuid4
 

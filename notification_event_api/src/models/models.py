@@ -1,7 +1,8 @@
 from typing import Any, Optional
+from uuid import uuid4
 
 import orjson
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 def orjson_dumps(v: Any, *, default: Any) -> str:
@@ -12,6 +13,9 @@ class ORJSONModel(BaseModel):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps
+
+    def to_dict(self):
+        return self.dict()
 
 
 class StatusMessage(ORJSONModel):
@@ -25,7 +29,7 @@ class Payload(ORJSONModel):
     body: Optional[dict]
 
 
-class NotificationEvent(ORJSONModel):
+class RawNotificationEvent(ORJSONModel):
     receivers_list: list[str]
     sender: str
     event_type: str
@@ -37,13 +41,22 @@ class NotificationEvent(ORJSONModel):
     payload: Payload
 
 
+class NotificationEvent(RawNotificationEvent):
+    notification_id: str = Field(default_factory=uuid4)
+
+    def to_dict(self):
+        data = self.dict()
+        data["notification_id"] = str(self.notification_id)
+        return data
+
+
 class EnrichedNotification(ORJSONModel):
-    _id: str
+    notification_id: str
     priority: int
     type: str
     transport: dict
 
 
 class NotificationStatus(ORJSONModel):
-    _id: str
+    notification_id: str
     status: str

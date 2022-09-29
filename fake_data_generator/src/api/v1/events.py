@@ -7,7 +7,7 @@ from fastapi import APIRouter, logger
 from fastapi_utils.tasks import repeat_every
 
 from core.config import settings
-from models.models import NotificationEvent, Payload
+from models.models import RawNotificationEvent, Payload
 from . import fake
 
 EVENT_TYPE = ['birthday', 'registration', 'reminder', 'comment_like', 'weekly_news']
@@ -17,13 +17,13 @@ router = APIRouter()
 
 
 @router.post("/",
-             response_model=NotificationEvent,
+             response_model=RawNotificationEvent,
              summary="Send event to make notification",
              description="Send event to make notification")
 @repeat_every(seconds=settings.REPEAT_TASK_EVERY_SECONDS)
-async def send_notification_event() -> NotificationEvent:
+async def send_notification_event() -> RawNotificationEvent:
     scheduled = getrandbits(1)
-    event = NotificationEvent(
+    event = RawNotificationEvent(
         receivers_list=[str(uuid.uuid4()) for i in range(1, randint(1, 10))],
         sender=f'{fake.word()}@yandex.ru',
         event_type=choice(EVENT_TYPE),
