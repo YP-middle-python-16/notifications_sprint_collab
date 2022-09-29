@@ -27,6 +27,21 @@ services:
       timeout: 10s
       retries: 10
 
+  enricher:
+    build: enricher
+#    restart: always
+    container_name: enricher
+    ports:
+      - "8006:8000"
+    command: bash -c 'gunicorn main:app --workers 4
+      --worker-class uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:8000 --reload'
+    env_file:
+      - enricher/src/core/.env
+    depends_on:
+      - api
+      - mongo
+
   data_generator:
     build: fake_data_generator
     restart: always

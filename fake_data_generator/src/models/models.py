@@ -36,7 +36,9 @@ class UserInfo(ORJSONModel):
     user_id: str
     last_name: str
     first_name: str
-    email: str
+    email: Optional[str]
+    telephone_number: Optional[str]
+    device_info: Optional[list[str]]
     birthday_date: Optional[str]
 
 
