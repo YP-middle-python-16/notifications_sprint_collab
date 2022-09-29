@@ -48,3 +48,14 @@ class MovieInfo(ORJSONModel):
     season: Optional[int]
     episode: Optional[int]
     release_date: Optional[str]
+
+
+class Template(ORJSONModel):
+    name: str
+    transport: str
+    body: str
+
+
+class StatusMessage(ORJSONModel):
+    status: str
+    body: str
