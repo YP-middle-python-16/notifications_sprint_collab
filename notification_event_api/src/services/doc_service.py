@@ -17,13 +17,15 @@ class DocService:
 
     async def select(self, query, table: str):
         collection = self.db[table]
-        result = await collection.find(query)
-        return list(result)
+        cursor = collection.find(query)
+
+        return [document async for document in cursor]
 
     async def view_all(self, table: str) -> list:
         collection = self.db[table]
-        result = await collection.find()
-        return list(result)
+        cursor = collection.find()
+
+        return [document async for document in cursor]
 
     async def count(self, query, table: str) -> int:
         collection = self.db[table]
