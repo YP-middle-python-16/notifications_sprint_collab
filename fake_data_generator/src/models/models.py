@@ -25,7 +25,7 @@ class NotificationEvent(ORJSONModel):
     sender: str
     event_type: str
     transport: Optional[list[str]]
-    priority: int
+    priority: str
     created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
@@ -53,6 +53,7 @@ class MovieInfo(ORJSONModel):
 class Template(ORJSONModel):
     name: str
     transport: str
+    subject: Optional[str]
     body: str
 
 
