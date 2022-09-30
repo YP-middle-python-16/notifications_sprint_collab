@@ -49,7 +49,7 @@ class RawNotification(ORJSONModel):
     sender: str
     event_type: str
     transport: Optional[str]
-    priority: int
+    priority: str
     created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
@@ -58,6 +58,6 @@ class RawNotification(ORJSONModel):
 
 class FinalNotification(ORJSONModel):
     notification_id: str
-    priority: int
+    priority: str
     type: str = 'transactional'
     transport: Dict[str, list]
