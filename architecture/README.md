@@ -16,7 +16,7 @@
   "sender": "str",
   "event_type": event_type,
   "transport": ["sms", "push"],
-  "priority": 1,
+  "priority": 'low_priority', # low_priority/high_priority
   "created_dt": created_dt,
   "schedule": "5 4 * * *",
   "start_date": null,
@@ -33,7 +33,7 @@
 - реклама новинок
 - напоминание об отложенных
 
-`priority` - числовое значение приоритета уведомлений, 1 - самые срочные. Диапазон от 1 до 5.
+`priority` - low_priority/high_priority.
 
 `schedule`, `start_date` - cron-значение и дата старта для начала отсылки периодических уведомлений.
 
@@ -46,7 +46,7 @@
 ```json
 {
   "notification_id": "str", # сквозное id, генерится перед тем, как положить нотификацию в монго
-  "priority": 1,
+  "priority": 'low_priority', # low_priority/high_priority
   "type": "transactional" # scheduled/transactional
   "transport": {
     "email": [
