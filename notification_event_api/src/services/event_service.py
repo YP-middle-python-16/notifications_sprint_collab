@@ -1,5 +1,5 @@
-from async_property import async_property
 from aio_pika import RobustConnection, Message
+from async_property import async_property
 
 from models.models import EnrichedNotification
 
@@ -16,9 +16,9 @@ class EventService:
 
         return self._channel
 
-    async def send_message(self, notification: EnrichedNotification, queue: str, encoding: str = 'utf-8'):
-        queue = await self.channel.declare_queue(queue)
+    async def send_message(self, notification: EnrichedNotification, queue_name: str, encoding: str = 'utf-8'):
+        await self.channel.declare_queue(queue_name)
         await self.channel.default_exchange.publish(
             Message(body=notification.json().encode(encoding)),
-            routing_key=queue,
+            routing_key=queue_name,
         )
