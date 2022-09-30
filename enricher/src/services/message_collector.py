@@ -26,7 +26,7 @@ class MessageCollector:
     async def get_final_notifications(self) -> FinalNotification:
         transport_class = self.get_transport_class(self.notification.transport)
         transport: BaseTransport = transport_class(notification=self.notification, storage_service=self.storage_service)
-        return FinalNotification(_id=self.notification_id,
+        return FinalNotification(notification_id=self.notification_id,
                                  priority=self.notification.priority,
                                  type=self.type,
                                  transport={self.notification.transport: await transport.prepare_message()})
