@@ -34,7 +34,7 @@ class RawNotificationEvent(ORJSONModel):
     sender: str
     event_type: str
     transport: Optional[list[str]]
-    priority: int
+    priority: str
     created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
@@ -52,7 +52,7 @@ class NotificationEvent(RawNotificationEvent):
 
 class EnrichedNotification(ORJSONModel):
     notification_id: str
-    priority: int
+    priority: str
     type: str
     transport: dict
 
