@@ -111,3 +111,13 @@ services:
       - api
       - rabbitmq3
     command: bash -c 'python3 main.py'
+
+  worker_hight_priority:
+    container_name: worker_low_priority
+    build: worker
+    env_file:
+      - worker/src/core/.env.dev
+    depends_on:
+      - api
+      - rabbitmq3
+    command: bash -c 'python3 main.py --priority'
