@@ -7,11 +7,12 @@ from fastapi import APIRouter, logger
 from fastapi_utils.tasks import repeat_every
 
 from core.config import settings
-from models.models import NotificationEvent
+from models.models import NotificationEvent, Payload
 from . import fake
 
 EVENT_TYPE = ['birthday', 'registration', 'reminder', 'comment_like', 'weekly_news']
 TRANSPORT = ['sms', 'push', 'email']
+PRIORITIES = ['low_priority', 'high_priority']
 
 router = APIRouter()
 
@@ -32,11 +33,13 @@ async def send_notification_event() -> NotificationEvent:
         schedule='0 0 * * *' if scheduled else None,
         start_dt=(datetime.now() + timedelta(days=randint(0, 10))).strftime(
             '%Y-%m-%d %H:%M:%S.%f') if scheduled else None,
-        priority=randint(0, 5),
-        payload={
-            'movie_ids': [str(uuid.uuid4()) for i in range(0, randint(0, 10))],
-            'timezone': 'Europe/Moscow',
-        },
+        priority=[PRIORITIES[i] for i in range(randint(0, len(PRIORITIES) - 1))],
+        payload=Payload(header=' '.join([fake.word() for i in range(randint(1, 5))]),
+                        template=fake.word(),
+                        body={
+                            'movie_ids': [str(uuid.uuid4()) for i in range(0, randint(0, 10))],
+                            'timezone': 'Europe/Moscow',
+                        })
     )
     try:
         async with aiohttp.ClientSession(headers={'Content-Type': 'application/json'}) as session:

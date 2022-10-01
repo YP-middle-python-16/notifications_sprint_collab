@@ -25,38 +25,26 @@ class NotificationEvent(ORJSONModel):
     sender: str
     event_type: str
     transport: Optional[list[str]]
-    priority: str
+    priority: int
     created_dt: Optional[str]
     schedule: Optional[str]
     start_date: Optional[str]
     payload: Payload
 
 
-class UserInfo(ORJSONModel):
-    user_id: str
-    last_name: str
-    first_name: str
-    email: Optional[str]
-    telephone_number: Optional[str]
-    device_info: Optional[list[str]]
-    birthday_date: Optional[str]
+class EnrichedNotification(ORJSONModel):
+    notification_id: str
+    priority: str
+    type: str
+    transport: dict
 
 
-class MovieInfo(ORJSONModel):
-    movie_id: str
-    title: str
-    season: Optional[int]
-    episode: Optional[int]
-    release_date: Optional[str]
-
-
-class Template(ORJSONModel):
-    name: str
-    transport: str
-    subject: Optional[str]
-    body: str
-
-
-class StatusMessage(ORJSONModel):
+class NotificationStatus(ORJSONModel):
+    _id: str
     status: str
-    body: str
+
+
+class NotificationEmail(ORJSONModel):
+    address: str
+    subject: str
+    message: str
