@@ -1,0 +1,61 @@
+name: Notification application
+
+on:
+  push:
+    branches: ["feature/cicd"]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: make deps
+
+      - name: Lint
+        run: make lint
+
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          path: reports/
+
+
+      - name: Send success message to Telegram
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.repository }}: Pipeline for ${{github.sha}} from ${{ github.actor }} finished successfully!
+            ${{ github.action }}.
+            Commit message: ${{ github.event.commits[0].message }}
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+      - name: Send fail message to Telegram
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.repository }}: Pipeline for ${{github.sha}} from ${{ github.actor }} finished with error!
+            ${{ github.action }}.
+            Commit message: ${{ github.event.commits[0].message }}
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            ${{ job.container }}
