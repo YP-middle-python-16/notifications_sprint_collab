@@ -34,9 +34,6 @@ jobs:
           name: reports
           path: reports/
 
-      #- name: Test API
-      #  run: |
-      #    PYTHONPATH="api_app/src" python -m pytest api_app/tests
 
       - name: Send success message to Telegram
         if: success()
