@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-#from ...core.config import settings
 from core.config import settings
 from services.email_sender import FakeEmailSender, EmailSender
 
@@ -8,21 +7,20 @@ from services.email_sender import FakeEmailSender, EmailSender
 class SenderAbstract(ABC):
     @abstractmethod
     def send(self, *args, **kwargs):
-    #def send(self, address: str, subject: str, data: str):
-        print(args)
-
+        pass
 
 
 class SMSSender(SenderAbstract):
     def send(self, *args, **kwargs):
-        print(args)
+        pass
+
 
 class PushSender(SenderAbstract):
     def send(self, *args, **kwargs):
-        print(args)
+        pass
 
 
-class InvalidEmailSenderType(object):
+class InvalidSenderType(object):
     pass
 
 
@@ -37,4 +35,4 @@ class SenderFactory:
             return SMSSender()
         elif transport == 'push':
             return PushSender()
-        raise InvalidEmailSenderType(f'Invalid sender type {transport}')
+        raise InvalidSenderType(f'Invalid sender type {transport}')

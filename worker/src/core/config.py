@@ -36,5 +36,10 @@ class Settings(BaseSettings):
     SMS_SENDER_TYPE: str = Field(env="SMS_SENDER_TYPE", default="fake")
     PUSH_SENDER_TYPE: str = Field(env="PUSH_SENDER_TYPE", default="fake")
 
+    NOTIFICATION_HOST: str = Field(env="NOTIFICATION_HOST", default="localhost")
+    NOTIFICATION_PORT: str = Field(env="NOTIFICATION_PORT", default="8000")
+    SEND_EVENT_ENDPOINT: str = Field(env="SEND_EVENT_ENDPOINT", default="/api/v1/event/status")
+
+
 
 settings = Settings()

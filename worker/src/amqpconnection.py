@@ -37,19 +37,11 @@ class AmqpConnection:
     def setup_queues(self):
         self.channel.exchange_declare(self.exchange, exchange_type='direct')
         self.channel.queue_declare(self.queue)
-        self.channel.queue_bind(self.queue, exchange=self.exchange, routing_key='ping')
+        self.channel.queue_bind(self.queue, exchange=self.exchange, routing_key=self.queue)
 
     def do_async(self, callback, *args, **kwargs):
         if self.connection.is_open:
             self.connection.add_callback_threadsafe(functools.partial(callback, *args, **kwargs))
-
-    def publish(self, payload):
-        if self.connection.is_open and self.channel.is_open:
-            self.channel.basic_publish(
-                exchange='Ping_Exchange',
-                routing_key='ping',
-                body=payload
-            )
 
     @backoff.on_exception(backoff.expo, pika.exceptions.AMQPConnectionError, max_time=60)
     def consume(self, on_message):

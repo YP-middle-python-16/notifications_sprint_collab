@@ -14,9 +14,6 @@ class ORJSONModel(BaseModel):
         json_dumps = orjson_dumps
 
 
-
-
-
 class Payload(ORJSONModel):
     header: str
     template: str
@@ -36,7 +33,7 @@ class NotificationEvent(ORJSONModel):
 
 
 class EnrichedNotification(ORJSONModel):
-    _id: str
+    notification_id: str
     priority: str
     type: str
     transport: dict

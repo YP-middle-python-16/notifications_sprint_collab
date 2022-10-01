@@ -14,9 +14,9 @@ from pydantic import ValidationError
 from services.sender_factory import SenderFactory
 
 logger = logging.getLogger(__name__)
-
+"""
+Пример сообщения в брокере
 message = {
-    "_id": "str",
     "notification_id": "str",
     "priority": "hight",
     "type": "transactional",
@@ -25,17 +25,11 @@ message = {
             "address": "apenshin@gmail.com",
             "message": "1",
             "subject": "Тестовое письмо"
-        },
-        "sms": {
-            "number": "+71231231212",
-            "message": "str"
-        },
-        "push": {
-            "device": "",
-            "message": "str"
         }
+        
     }
 }
+"""
 
 
 def decode_data_from_json(data):
@@ -47,21 +41,25 @@ def decode_data_from_json(data):
 
 def on_message(channel, method, properties, body):
     body = decode_data_from_json(body)
-    if not body:
+    if type(body) is not dict:
         logger.error('Error send message. Empty or not json')
         return
     try:
         msg = EnrichedNotification(**body)
     except ValidationError as e:
         raise ValueError('Error message')
-    print(msg)
-    id = "633155227c4b6f5fb5bb8cf5"
+
     for transport in msg.transport:
         sender = SenderFactory.get_sender(transport)
         response = sender.send(msg.transport.get(transport))
-        r = requests.post(f"http://localhost:8000/api/v1/event/status/{id}", json={"status": "250"})
-        print(r.text)
-
+        try:
+            r = requests.post(
+                f"http://{settings.NOTIFICATION_HOST.rstrip('/')}:{settings.NOTIFICATION_PORT}/"
+                f"{settings.SEND_EVENT_ENDPOINT.lstrip('/')}/{msg.notification_id}",
+                params={"status": "250"})
+            r.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            raise SystemExit(err)
 
 
 def main():
