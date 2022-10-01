@@ -20,7 +20,7 @@
   "sender": "alabama@yandex.ru",
   "event_type": "birthday",
   "transport": "sms",
-  "priority": 0,
+  "priority": "low_priority", # low_priority/high_priority
   "created_dt": "21-06-2022 21:34:06.000+0300",
   "schedule": "0 0 * * *",
   "start_date": "27-06-2022 21:34:06.000+0300",
@@ -51,7 +51,7 @@
 5) Возвращается итоговое сообщение вида:
 ```json
 {
-  "priority": 0,
+  "priority": "low_priority", # low_priority/high_priority
   "type": "transactional",
   "transport": {
     "sms": [
