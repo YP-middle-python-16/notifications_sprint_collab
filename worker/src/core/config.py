@@ -1,11 +1,8 @@
-from logging import config as logging_config
+import logging
 
-# from core.logger import LOGGING
 from pydantic import BaseSettings, Field
 
-
-# Применяем настройки логирования
-# logging_config.dictConfig(LOGGING)
+logger = logging.getLogger('worker')
 
 
 class RabbitPriorityQueue(BaseSettings):

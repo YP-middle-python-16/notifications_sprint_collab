@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from core.config import logger
 from models.models import NotificationEmail
 
 
@@ -13,13 +14,12 @@ class FakeEmailSender(EmailSenderAbstract):
     def send(self, *args, **kwargs):
         data = args[0]
         email = NotificationEmail(**data)
-        print(email)
-        print('-' * 10)
-        print(f'Send new email to {email.address}')
-        print(f'Subject: {email.subject}')
-        print(f'{email.message}')
-        print('-' * 10)
-        print()
+        logger.info(email)
+        logger.info('-' * 10)
+        logger.info(f'Send new email to {email.address}')
+        logger.info(f'Subject: {email.subject}')
+        logger.info(f'{email.message}')
+        logger.info('-' * 10)
 
 
 class EmailSender(EmailSenderAbstract):
