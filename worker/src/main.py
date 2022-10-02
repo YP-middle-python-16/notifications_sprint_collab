@@ -10,6 +10,7 @@ from core.config import settings, logger
 from models.models import EnrichedNotification
 from services.sender_factory import SenderFactory
 
+
 """
 Пример сообщения в брокере
 message = {
@@ -28,11 +29,13 @@ message = {
 """
 
 
+
 def decode_data_from_json(data: str) -> t.Union[None, t.Dict]:
     try:
         return json.loads(data)
     except json.decoder.JSONDecodeError:
         return None
+
 
 
 def on_message(channel, method, properties, body) -> None:

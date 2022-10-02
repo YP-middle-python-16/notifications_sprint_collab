@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+
 from core.config import settings
 from services.email_sender import FakeEmailSender, EmailSender
 

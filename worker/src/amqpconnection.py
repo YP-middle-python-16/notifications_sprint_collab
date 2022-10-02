@@ -1,3 +1,4 @@
+
 import functools
 import typing as t
 
@@ -36,6 +37,7 @@ class AmqpConnection:
         self.connection = pika.BlockingConnection(parameters=params)
         self.channel = self.connection.channel()
         logger.info('Connected Successfully to', self.hostname)
+
 
     def setup_queues(self):
         self.channel.exchange_declare(self.exchange, exchange_type='direct')

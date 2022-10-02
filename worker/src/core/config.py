@@ -38,4 +38,5 @@ class Settings(BaseSettings):
     SEND_EVENT_ENDPOINT: str = Field(env="SEND_EVENT_ENDPOINT", default="/api/v1/event/status")
 
 
+
 settings = Settings()
