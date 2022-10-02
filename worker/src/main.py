@@ -1,19 +1,15 @@
 import argparse
 import json
-import logging
+import typing as t
 
 import requests
-from amqpconnection import AmqpConnection
-
-import time
-
-from models.models import EnrichedNotification
-from core.config import settings
 from pydantic import ValidationError
 
+from amqpconnection import AmqpConnection
+from core.config import settings, logger
+from models.models import EnrichedNotification
 from services.sender_factory import SenderFactory
 
-logger = logging.getLogger(__name__)
 """
 Пример сообщения в брокере
 message = {
@@ -32,14 +28,14 @@ message = {
 """
 
 
-def decode_data_from_json(data):
+def decode_data_from_json(data: str) -> t.Union[None, t.Dict]:
     try:
         return json.loads(data)
     except json.decoder.JSONDecodeError:
         return None
 
 
-def on_message(channel, method, properties, body):
+def on_message(channel, method, properties, body) -> None:
     body = decode_data_from_json(body)
     if type(body) is not dict:
         logger.error('Error send message. Empty or not json')

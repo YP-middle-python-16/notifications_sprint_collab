@@ -1,11 +1,8 @@
-from logging import config as logging_config
+import logging
 
-# from core.logger import LOGGING
 from pydantic import BaseSettings, Field
 
-
-# Применяем настройки логирования
-# logging_config.dictConfig(LOGGING)
+logger = logging.getLogger('worker')
 
 
 class RabbitPriorityQueue(BaseSettings):
@@ -39,7 +36,6 @@ class Settings(BaseSettings):
     NOTIFICATION_HOST: str = Field(env="NOTIFICATION_HOST", default="localhost")
     NOTIFICATION_PORT: str = Field(env="NOTIFICATION_PORT", default="8000")
     SEND_EVENT_ENDPOINT: str = Field(env="SEND_EVENT_ENDPOINT", default="/api/v1/event/status")
-
 
 
 settings = Settings()
