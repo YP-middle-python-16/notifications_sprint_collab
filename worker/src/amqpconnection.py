@@ -1,7 +1,10 @@
+import functools
+import typing as t
+
 import backoff
 import pika
-import functools
-import os
+
+from core.config import logger
 
 AMQP_HOSTNAME = "localhost"
 AMQP_PORT = "localhost"
@@ -24,7 +27,7 @@ class AmqpConnection:
         self.channel = None
 
     def connect(self, connection_name='Neat-App'):
-        print('Attempting to connect to', self.hostname)
+        logger.info('Attempting to connect to', self.hostname)
         params = pika.ConnectionParameters(
             host=self.hostname,
             port=self.port,
@@ -32,7 +35,7 @@ class AmqpConnection:
             client_properties={'connection_name': connection_name})
         self.connection = pika.BlockingConnection(parameters=params)
         self.channel = self.connection.channel()
-        print('Connected Successfully to', self.hostname)
+        logger.info('Connected Successfully to', self.hostname)
 
     def setup_queues(self):
         self.channel.exchange_declare(self.exchange, exchange_type='direct')
@@ -44,7 +47,7 @@ class AmqpConnection:
             self.connection.add_callback_threadsafe(functools.partial(callback, *args, **kwargs))
 
     @backoff.on_exception(backoff.expo, pika.exceptions.AMQPConnectionError, max_time=60)
-    def consume(self, on_message):
+    def consume(self, on_message: t.Callable):
         if self.connection.is_closed or self.channel.is_closed:
             self.connect()
             self.setup_queues()
@@ -52,9 +55,10 @@ class AmqpConnection:
             self.channel.basic_consume(queue=self.queue, auto_ack=True, on_message_callback=on_message)
             self.channel.start_consuming()
         except KeyboardInterrupt:
-            print('Keyboard interrupt received')
+            logger.error('Keyboard interrupt received')
             self.channel.stop_consuming()
             self.connection.close()
-            os._exit(1)
+            raise
         except pika.exceptions.ChannelClosedByBroker:
-            print('Channel Closed By Broker Exception')
+            logger.error('Channel Closed By Broker Exception')
+            raise
